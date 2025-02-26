@@ -1,4 +1,4 @@
-# Domain Driven Development with LLM: App 
+# Domain Driven Development with LLM: App Peter Eijgermans
 
 ## Installation and use only
 If you only want to install the application for usage and testing, follow the steps below.
