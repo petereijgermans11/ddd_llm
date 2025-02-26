@@ -1,0 +1,151 @@
+Domain-Driven Design: Simple Explanation
+In this article, we will cover:
+
+Strategic Design
+Tactical Design
+Aggregate
+Repositories and Services
+When you are trying to build complex software it is important that everyone is on the same page. Even though most of us prefer to work alone, at home, with an endless supply of coffee, good software just isn’t built that way.
+
+The software itself should represent the business, and it should be clear from the code how the business functions. Software development is difficult enough without the business and engineering using different names for the same thing.
+
+This is where Domain Driven Design (DDD) comes in, which was made popular by Eric Evans in his 2003 book Domain Driven Design: Tackling Complexity in the Heart of Software.
+
+In this article, I am going to cover the key concepts that you need to know so that you can use DDD in your next project.
+
+Play
+Strategic Design #
+The first step in using DDD is what we call Strategic Design. Although it is possible to use DDD with an existing application it is a lot easier to do when the application is built with it in mind.
+
+We need to work out what the different subdomains are in the business. A subdomain in this case refers to the subject area in which we are building the application and subdomains are part of that application.
+
+It is important when working out the subdomains that you use the correct language.
+
+You want the words that you use to describe objects in your application to be the same words that are used by the business. This has the grand name of “Ubiquitous language”, which is just a fancy way of saying, everyone needs to use the same words to describe the business.
+
+Subdomains #
+Let’s use Netflix as an example. If we were to build Netflix from scratch using DDD then what domains would we have?
+
+Video Streaming — this is obviously the main part of the business, so this would be a core domain.
+Recommendations — the recommendations engine and the machine learning involved is likely another subdomain.
+Billing — billing and handling the monthly subscriptions could be another subdomain.
+There are likely quite a few more domains that we haven’t covered here as well.
+
+Working out what the subdomains are should always be done as a group exercise with the business. If the engineering team tries to work out what the domains are themselves then it might not be representative of the business which defeats the whole point of using Domain Driven Design.
+
+The aim here is to end up with a system that reflects the real-world domain that it is trying to solve.
+
+Working out all the domains is going to be an iterative process. You might find that one of your domains is huge and needs to be broken down further.
+
+Once you have worked out what the main domains are, the next step is to work out the key parts that make up each domain.
+
+Bounded Context #
+If we have a closer look at the billing domain we might have subscribers, accounts, payment details and subscription plans.
+
+What you will notice when you go through this exercise is that there will be parts common across multiple subdomains. For example, the subscribers or users will likely come up across the whole system.
+
+Each domain will have its own preference as to what to call the users. The billing domain may call them subscribers or customers. The video streaming domain might call them viewers.
+
+DDD copes with this by creating what is called a Bounded Context. Each subdomain will have its own Bounded Context allowing the language to be used for each domain to be different.
+
+You don’t need to try to force the entire business to agree on what to call “Users” you just need to agree on the language to use within that subdomain.
+
+If you have done a good job you should find some clear separation between the different subdomains and the language used. Each subdomain should have at least a few things that are unique to just that domain.
+
+For example, the billing domain will contain payment details which you wouldn’t expect to see in any of the other domains.
+
+The aim here is to build up a model with the business of all the different elements that make up each domain. The elements inside the domain are called Entities which I will cover in more detail in a bit.
+
+Relationships #
+Once we know what all the different subdomains are we need to work out how they interact and what relationships exist between them.
+
+We do this by creating a Context Map which outlines which subdomains communicate with each other, how they communicate and the direction of the communication.
+
+The interactions between subdomains will usually happen between entities.
+
+Back to our Netflix example, the video streaming domain will need to know what video quality to stream to the viewers.
+
+This all depends on what subscription plan they are paying for:
+
+Basic — HD
+Standard — Full HD
+Premium — Ultra HD
+The subscription plan however will be outside the bounded context of the streaming domain. It doesn’t need to know what users are paying it only cares about streaming videos.
+
+The streaming domain will therefore need to check with the billing domain to find out what quality video to serve to the user.
+
+Of course, the billing domain doesn’t care about video quality it only cares about the user’s subscription plan.
+
+So we need to do a mapping between the viewer in the streaming domain with the subscriber in the billing domain.
+
+Now to make sure we don’t pollute either domain with information that doesn’t need to be there, we create what we call an anti-corruption layer which does the translation between domains for us.
+
+Once we have outlined all the domains and how they all interact we move on to the next stage which is tactical design.
+
+Tactical Design #
+In this stage, we look at trying to refine our domain models a bit further. To do this we look at each of our domains and work out what all the objects are inside them.
+
+Domain Objects come in two forms.
+
+Entities #
+The entities of a domain object link to their real-world counterparts. So an example of an entity might be the subscriber in our Netflix example.
+
+Each entity has an ID and it is this ID that makes them unique. Two different entities with the same properties would be considered different entities if they have different IDs.
+
+Entities are mutable, you can change their properties over time. For example, a subscriber could change their email address and it would still be the same subscriber as it has the same ID.
+
+The other domain objects to consider are called Value Objects.
+
+Value Objects #
+A value object, as the name suggests, generally corresponds to a value in your domain.
+
+Entities can consist of several value objects. For a subscriber, this could be their email address or their date of birth.
+
+Value objects are not unique and two objects with the same value are considered equal. If you are creating value objects in languages like C# or Java then you will need to override the Equals and HashCode methods so that when you compare them they are considered equal.
+
+Unlike Entities, Value Objects should be immutable. You can’t update them, if you need a different value then you just create a new one.
+
+We generally do this by only allowing values to be entered in the constructor and then not providing any setter methods.
+
+The key thing to understand here is they are an object. You could just as easily create a string to store the email address but by creating a Value Object you are explicitly saying that this is an important part of your domain.
+
+The fact that it is an object means that you can add additional validation and business logic in the constructor. This can be really useful. For example, if you have an email address object, you don’t need to check everywhere in your code that it is in fact a valid email address, you can do that inside the value object.
+
+Even if you don’t end up using Domain Driven Design, value objects can be a great way to write cleaner code in your applications.
+
+Entity or Value Object? #
+When modelling your objects it can be difficult to decide whether something should be an entity or a value object.
+
+Generally, it depends on how important that object is in your domain model. For example, in many domains, the address is just information. It is part of the billing details but doesn’t have any meaning in the system beyond that.
+
+Now imagine you are creating a real estate application. Now the address isn’t just information, it is key to understanding the property. In this case, it is more likely to be an entity.
+
+Generally, you want to have more Value Objects than Entities in your domain as value objects are simpler to work with as they are small and immutable.
+
+Aggregate #
+Now that we know about Entities and Value Objects, the next important object to consider in DDD is called an aggregate.
+
+An aggregate, as the name suggests, is a group of several entities and value objects.
+
+An example of an aggregate could be a customer’s order. It is made up of the customer, the products they have ordered, the order price and other details such as the shipping address.
+
+An aggregate is also a transactional boundary, so whenever changes are made they should be either committed or rolled back in a single transaction to the database. This way the aggregate is always in a consistent state.
+
+Like Entities, aggregates also have an ID so they can be referenced from other parts of your application.
+
+The aggregate is also responsible for enforcing business invariants. These are business rules that always remain true no matter what you do in the system. For example, you might have a rule that the order total should be the sum of the products ordered. You might have another rule that stops people from ordering more of a product than what is in stock.
+
+Obviously, all of this comes at a cost. The more rules that you add to your aggregate, the longer it is going to take to do updates, which could affect user experience.
+
+So generally there is a bit of a trade-off between performance and consistency that you need to keep in mind. In some cases, it makes more sense to add what we call a corrective policy that will run on a regular basis, which will either fix or flag anything that isn’t correct.
+
+Repositories and Services #
+Finally, we have repositories and services, which if you have done any backend development you will probably be familiar with.
+
+The repositories in this case are the persistence layer for our aggregates so that they can be stored in the database.
+
+Then we have services which contain additional business logic which either won’t fit into a single aggregate or spans multiple aggregates.
+
+Once you have everything mapped you are ready to start building the application.
+
+If you want to learn the best approach to do that I suggest your read this article on hexagonal architecture.

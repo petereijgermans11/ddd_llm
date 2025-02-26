@@ -1,0 +1,49 @@
+prompt:
+  template_dir: ~/ddd_llm_data
+  template_file: ddd_prompt.txt
+openai:
+  max_tokens: 8192
+  temperature: 0.7
+anthropic:
+  max_tokens_to_sample: 4096
+  temperature: 0.7
+deepseek:
+  max_tokens: 8192
+  temperature: 0.7
+  base_url: https://api.deepseek.com
+custom_provider:
+  max_input_length: 512
+  max_output_length: 512
+
+logging:
+  version: 1
+  formatters:
+    simple:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    detailed:
+      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+
+  handlers:
+    consoleHandler:
+      class: logging.StreamHandler
+      level: INFO
+      formatter: detailed
+      stream: ext://sys.stdout
+    fileHandler:
+      class: logging.FileHandler
+      level: INFO
+      formatter: detailed
+      filename: ddd_llm_app.log
+
+  loggers:
+    __main__:
+      level: INFO
+      handlers: [ consoleHandler, fileHandler ]
+      propagate: false
+    ddd_llm_app.llm_providers.openai_provider:
+      level: INFO
+      handlers: [ consoleHandler, fileHandler ]
+      propagate: false
+  root:
+    level: INFO
+    handlers: [ consoleHandler, fileHandler ]

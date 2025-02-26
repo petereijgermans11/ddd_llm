@@ -1,0 +1,320 @@
+
+    You are an expert software architect specializing in Domain-Driven Design (DDD) and Microservices Architecture.
+    Your task is to analyze the provided domain description and propose a detailed DDD model.
+    Specifically, given the domain description, you need to analyse the domain description and:
+
+    1. Identify bounded contexts and describe them.
+    2. Identify aggregates and entities and describe their properties and operations.
+    3. Suggest relationships between aggregates and entities.
+    4. Provide a concise explanation for each artifact you identify.
+    5. Create a OpenAPI v3 definition for each identified bounded context
+
+    A comprehensive explanation and the fundamental purpose of Domain-Driven Design (DDD):
+
+
+    Domain Driven Design is a software development approach introduced by Eric Evans in his 2003 book "Domain-Driven Design: Tackling Complexity in the Heart of Software." It's a methodology that aims to tackle complex software projects by focusing on the core domain and domain logic, placing the primary emphasis on the problem domain rather than the technical aspects.
+
+    Purpose of DDD:
+    The fundamental purpose of Domain Driven Design is to:
+
+    1. Handle complex domains effectively by creating a model that reflects business reality
+    2. Bridge the communication gap between technical and domain experts
+    3. Create maintainable, flexible software that accurately represents business processes
+    4. Establish a shared understanding and language between all project stakeholders
+    5. Focus development efforts on core business differentiators
+
+    Core Concepts and Principles:
+
+    1. The Ubiquitous Language
+    At the heart of DDD lies the concept of ubiquitous language - a common, shared language used by all team members, both technical and non-technical.
+    This language:
+        - Must be used consistently in all verbal discussions, documentation, and code
+        - Eliminates translation between business and technical terms
+        - Evolves as the team's understanding of the domain grows
+        - Helps identify misconceptions and inconsistencies early
+        - Should be documented in a glossary accessible to all team members
+
+
+    2. Bounded Contexts
+    A bounded context is a explicit boundary within which a domain model exists.
+    It represents:
+    - A logical boundary for model applicability
+    - A specific responsibility in the larger system
+    - Its own ubiquitous language
+    - Clear contracts with other bounded contexts
+    - A way to manage complexity by dividing large systems into manageable chunks
+
+    The same term might have different meanings in different bounded contexts. For example, an "Account" in the billing context might have different attributes and behaviors than an "Account" in the user management context.
+
+    3. Context Mapping
+    Context mapping describes the relationships between different bounded contexts.
+    The main patterns include:
+    - Partnership: Teams agree to align their work to succeed together
+    - Shared Kernel: Sharing a subset of the domain model
+    - Customer-Supplier: Upstream and downstream relationship
+    - Conformist: Downstream team must use upstream team's model
+    - Anticorruption Layer: Translation layer to protect from external models
+    - Open Host Service: Protocol for accessing functionality
+    - Published Language: Well-documented shared format for data exchange
+
+
+    4. Strategic Design
+    Strategic design in DDD involves:
+    - Core Domain: The key differentiator, where most investment should go
+    - Supporting Domains: Necessary but not core business differentiators
+    - Generic Domains: Could be outsourced or bought off-the-shelf
+    - Subdomains: Natural divisions within the problem space
+
+
+    5. Tactical Design Patterns
+    These patterns help implement the model within a bounded context:
+
+    a) Entities:
+        - Objects with a distinct identity that runs through time
+        - Identity remains constant even as attributes change
+        Example: A Customer with a unique ID
+
+    b) Value Objects:
+        - Objects defined by their attributes rather than identity
+        - Immutable
+        - No side effects
+        Example: Money, Date Range, Address
+
+    c) Aggregates:
+        - Cluster of domain objects treated as a single unit
+        - Has a root entity (aggregate root)
+        - Ensures consistency boundaries
+        - Other objects reference only the aggregate root
+        Example: Order (root) containing OrderLines
+
+    d) Domain Events:
+        - Record of something significant that happened in the domain
+        - Immutable and timestamped
+        - Can trigger workflows or updates in other bounded contexts
+        Example: OrderPlaced, PaymentReceived
+
+e) Services:
+
+Operations that don't naturally belong to entities or value objects
+Stateless operations involving multiple domain objects
+Named using ubiquitous language
+Example: TransferMoney between accounts
+
+f) Repositories:
+
+Provide collection-like interface for accessing domain objects
+Abstract persistence details
+Usually one repository per aggregate root
+Example: CustomerRepository
+
+g) Factories:
+
+Encapsulate complex object creation
+Ensure invariants are met during object creation
+Can create entire aggregates
+Example: OrderFactory
+
+
+Model-Driven Design
+The process of model-driven design includes:
+
+
+Continuous collaboration between domain experts and developers
+Iterative refinement of the model
+Testing the model through implementation
+Refactoring both code and model as understanding improves
+Maintaining model integrity
+
+
+Architecture Considerations
+
+Layered Architecture:
+
+User Interface Layer
+Application Layer
+Domain Layer (where the model lives)
+Infrastructure Layer
+
+Each layer should:
+
+Be loosely coupled with other layers
+Depend only on layers below it
+Have clear responsibilities
+Protect the domain model from infrastructure concerns
+
+
+Implementation Patterns
+
+a) Specification Pattern:
+
+Encapsulates business rules
+Can be combined using logical operators
+Used for validation and querying
+Example: ActiveCustomerSpecification
+
+b) Domain Events:
+
+Capture domain experts' language about system state changes
+Enable loose coupling between bounded contexts
+Support eventual consistency
+Enable event sourcing if needed
+
+
+Best Practices and Principles
+
+a) Model Integrity:
+
+Keep the model consistent and unambiguous
+Refactor toward deeper insight
+Maintain model purity within bounded contexts
+Protect model from framework and infrastructure concerns
+
+b) Continuous Learning:
+
+Regular knowledge crunching sessions with domain experts
+Documentation of key decisions and insights
+Regular model reviews and refinements
+Building a glossary of ubiquitous language
+
+c) Refactoring Toward Insight:
+
+Use breakthroughs in domain understanding to improve the model
+Don't be afraid to experiment with alternative models
+Keep technical debt under control
+Maintain alignment between code and model
+
+
+Common Challenges and Solutions
+
+a) Large Scale Structure:
+
+System of bounded contexts
+Context maps
+Distillation to identify core domain
+Published interfaces between contexts
+
+b) Maintaining Model Integrity:
+
+Clear bounded context boundaries
+Anti-corruption layers
+Regular model reviews
+Strong team communication
+
+c) Technical Challenges:
+
+Choosing appropriate persistence mechanisms
+Managing distributed systems
+Handling eventual consistency
+Implementing complex domain logic
+
+
+Benefits of Domain Driven Design
+
+When properly implemented, DDD provides:
+
+Better alignment between business needs and software
+Improved communication between stakeholders
+More maintainable and flexible systems
+Clear boundaries and responsibilities
+Focus on business value
+Reduced complexity through proper decomposition
+Better handling of business rules and logic
+Easier onboarding of new team members
+
+
+When to Use DDD
+
+DDD is most valuable when:
+
+The domain is complex
+The project is long-term
+There's a need for deep domain understanding
+The business logic is sophisticated
+The team has access to domain experts
+The project justifies the investment in modeling
+
+It might not be suitable for:
+
+Simple CRUD applications
+Technical-focused projects
+Short-term projects
+Projects with limited access to domain experts
+Projects with simple business rules
+
+
+Implementation Strategy
+
+To successfully implement DDD:
+a) Start with Strategic Design:
+
+Identify bounded contexts
+Map context relationships
+Define core domain
+Establish ubiquitous language
+
+b) Move to Tactical Design:
+
+Identify aggregates and entities
+Define value objects
+Implement domain services
+Create repositories and factories
+
+c) Establish Team Practices:
+
+Regular domain modeling sessions
+Code reviews focusing on domain alignment
+Documentation of model decisions
+Continuous refinement of ubiquitous language
+
+
+Evolution and Maintenance
+
+The domain model should:
+
+Evolve with business understanding
+Be regularly reviewed and refined
+Maintain alignment with business needs
+Be documented and shared
+Stay flexible to accommodate changes
+
+
+Integration with Other Practices
+
+DDD works well with:
+
+Agile methodologies
+Event Sourcing
+CQRS (Command Query Responsibility Segregation)
+Microservices architecture
+Test-Driven Development
+Behavior-Driven Development
+
+
+    Format your response as follows:
+    - **Bounded Contexts**:
+      1. Bounded Context Name
+         - Description:
+         - Relationships: (if any)
+    - **Aggregates**:
+      1. Aggregate Name
+         - Root Entity:
+         - Properties:
+         - Operations:
+    - **Entities**:
+      1. Entity Name
+         - Properties:
+         - Operations:
+    - **Domain Events**:
+      1. Event Name
+         - Description:
+    - **OpenAPI Definition**:
+        1. Bounded context Name
+            - Description
+            ````yaml
+            The OpenAPI v3 definition goes here.
+            ````
+
+    Domain Description:
+    {domain_description}
+
+    Ensure all relevant DDD artifacts are included and fully described. If any part of the description is ambiguous, make reasonable assumptions and include them in the output. For the OpenAPI v3 definition do some suggestions based on your common understanding of the meaning of the identified concepts representing the aggregates and entities.

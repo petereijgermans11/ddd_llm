@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Inference App</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa; /* Light white/pale white */
+            color: #343a40; /* Dark blue/anthracite */
+            font-family: Arial, sans-serif;
+        }
+        .form-control, .form-select {
+            margin-bottom: 1rem;
+        }
+        .btn-submit {
+            font-size: 1.2rem;
+            padding: 0.75rem 1.5rem;
+            background-color: #007bff; /* Primary blue */
+            border: none;
+            color: #ffffff;
+            border-radius: 5px;
+        }
+        .btn-submit:hover {
+            background-color: #0056b3; /* Darker blue */
+        }
+        #spinner {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1050;
+            display: none;
+        }
+        #result {
+            margin-top: 2rem;
+            padding: 1rem;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            background-color: #f0f8ff; /* Pale blue */
+            width: 100%;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        async function submitForm(event) {
+            event.preventDefault();
+            const formData = new FormData(document.getElementById("inferenceForm"));
+            const resultDiv = document.getElementById("result");
+            const spinner = document.getElementById("spinner");
+
+            // Show spinner
+            spinner.style.display = "block";
+            resultDiv.innerHTML = "";
+
+            try {
+                const response = await fetch("/submit", {
+                    method: "POST",
+                    body: formData,
+                });
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Render Markdown in the resultDiv
+                    resultDiv.innerHTML = `<div>${marked.parse(data.result)}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<pre>Error: ${data.error}</pre>`;
+                }
+            } catch (err) {
+                resultDiv.innerHTML = `<pre>Error: ${err.message}</pre>`;
+            } finally {
+                // Hide spinner
+                spinner.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container my-5">
+        <h1 class="text-center mb-4">DDD modelling with LLM</h1>
+        <form id="inferenceForm" class="mx-auto" style="max-width: 600px;" onsubmit="submitForm(event)">
+            <div class="mb-3">
+                <label for="model_name" class="form-label">Model Name:</label>
+                <select id="model_name" name="model_name" class="form-select">
+                    <option value="openai" selected>OpenAI</option>
+                    <option value="anthropic">Anthropic</option>
+                    <option value="deepseek">DeepSeek</option>
+                    <option value="flant5">Flan-T5</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="template_title" class="form-label">Prompt Template:</label>
+                <select id="template_title" name="template_title" class="form-select">
+<!--                    <option value="ddd1" selected>DDD1</option>-->
+<!--                    <option value="ddd2">DDD2</option>-->
+<!--                    <option value="ddd3">DDD3</option>-->
+                    {% for template in templates %}
+                        <option value="{{ template }}">{{ template }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="domain_description" class="form-label">Domain Description (Upload File):</label>
+                <input type="file" id="domain_description" name="domain_description" class="form-control" accept="*" required>
+            </div>
+
+            <div class="mb-3">
+                <label for="max_tokens" class="form-label">Max Tokens:</label>
+                <input type="number" id="max_tokens" name="max_tokens" class="form-control" value="100" required>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn-submit">Do Inference</button>
+            </div>
+        </form>
+
+        <img id="spinner" src="/static/spinner.gif" alt="Loading...">
+        <div id="result"></div>
+    </div>
+    <!-- Bootstrap JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

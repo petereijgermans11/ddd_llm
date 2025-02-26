@@ -1,0 +1,80 @@
+# The default Prompt template_file configuration values are included in comments below.
+#
+#prompt:
+#  template_dir: ~/ddd_llm_data
+#  template_file: ddd_prompt.txt
+#
+# The Prompt Template Configuration overrides:
+prompt:
+  template_dir: ./
+  template_file: test_prompt_tmpl.txt
+
+# The default LLM configuration values are included in comments below.
+#
+#openai:
+#  max_tokens: 8192
+#  temperature: 0.7
+#anthropic:
+#  max_tokens_to_sample: 4096
+#  temperature: 0.7
+#custom_provider:
+#  max_input_length: 512
+#  max_output_length: 512
+
+# LLM Configuration overrides
+openai:
+  max_tokens: 16384
+
+# The default Logging configuration values are included in comments below.
+#
+#logging:
+#  version: 1
+#  formatters:
+#    simple:
+#      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+#    detailed:
+#      format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+#
+#  handlers:
+#    consoleHandler:
+#      class: logging.StreamHandler
+#      level: INFO
+#      formatter: detailed
+#      stream: ext://sys.stdout
+#    fileHandler:
+#      class: logging.FileHandler
+#      level: INFO
+#      formatter: detailed
+#      filename: ddd_llm_app.log
+#
+#  loggers:
+#    __main__:
+#      level: INFO
+#      handlers: [ consoleHandler, fileHandler ]
+#      propagate: false
+#    ddd_llm_app.llm_providers.openai_provider:
+#      level: INFO
+#      handlers: [ consoleHandler, fileHandler ]
+#      propagate: false
+#  root:
+#    level: INFO
+#    handlers: [ consoleHandler, fileHandler ]
+#
+# The Logging Configuration overrides below:
+logging:
+  # Handlers
+  handlers:
+    consoleHandler:
+      level: DEBUG
+    fileHandler:
+      level: DEBUG
+      filename: ddd_llm_app.log
+  # Loggers - here you will configure the logger (log level)
+  loggers:
+    __main__:
+      level: DEBUG
+    ddd_llm_app.llm_providers.openai_provider:
+      level: DEBUG
+  # The root logger
+  root:
+    level: INFO
